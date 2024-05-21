@@ -4,18 +4,22 @@ public class MainFrame implements Runnable {
 
     private GraphicsPanel panel;
 
-    public MainFrame(String name) {
-        JFrame frame = new JFrame("Super Mario Game");
+    public MainFrame() {
+        int boardLen = 600;
+        int boardWid = 600;
+
+        JFrame frame = new JFrame("Snake Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(960, 580); // 540 height of image + 40 for window menu bar
+        frame.setSize(boardWid, boardLen); // 540 height of image + 40 for window menu bar
         frame.setLocationRelativeTo(null); // auto-centers frame in screen
+        frame.setVisible(true);
 
         // create and add panel
-        panel = new GraphicsPanel(name);
+        panel = new GraphicsPanel(boardLen, boardWid);
+        panel.requestFocus();
         frame.add(panel);
+        frame.pack();
 
-        // display the frame
-        frame.setVisible(true);
 
         // start thread, required for animation
         Thread thread = new Thread(this);
