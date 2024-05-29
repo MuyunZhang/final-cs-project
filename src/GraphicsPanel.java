@@ -12,15 +12,13 @@ public class GraphicsPanel extends JPanel {
     private boolean[] pressedKeys;
     private int boardLen;
     private int boardWid;
-    private Timer timer;
-    private int time;
-    private JButton pause;
-
-    private JButton reset;
-
-    private boolean paused = false;
     int blockSize = 25;
-    private boolean set = false;
+
+    private Block food;
+
+    ArrayList<Block> body;
+
+
 
     Block snake;
 
@@ -54,6 +52,11 @@ public class GraphicsPanel extends JPanel {
         draw(g);
     }
     public void draw(Graphics g){
+        for(int i = 0; i < boardWid/blockSize; i ++){
+            g.drawLine(i * blockSize, 0, i * blockSize, boardLen);
+            g.drawLine(0, i * blockSize, boardWid, i * blockSize);
+        }
+
        g.setColor(Color.GREEN);
        g.fillRect(snake.x * blockSize, snake.y * blockSize, blockSize,blockSize);
 
