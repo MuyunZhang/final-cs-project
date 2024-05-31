@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class GraphicsPanel extends JPanel{
+public class GraphicsPanel extends JPanel implements KeyListener, ActionListener{
     private BufferedImage background;
     private boolean[] pressedKeys;
     private int boardLen;
@@ -16,6 +16,11 @@ public class GraphicsPanel extends JPanel{
     private Block food;
     ArrayList<Block> body;
     Block snake;
+
+    private Timer timer;
+
+    private int speedX;
+    private int speedY;
 
     private class Block{
         int x;
@@ -32,6 +37,13 @@ public class GraphicsPanel extends JPanel{
             return y;
         }
 
+        public void setX(int n){
+            x = n;
+        }
+
+        public void setY(int y) {
+            this.y = y;
+        }
     }
 
     public GraphicsPanel(int len, int wid) {
@@ -40,6 +52,10 @@ public class GraphicsPanel extends JPanel{
         setBackground(Color.black);
         setPreferredSize(new Dimension(boardLen, boardWid));
         snake = new Block(5, 5);
+        food = new Block(10, 10);
+        pressedKeys = new boolean [128];
+        speedX = 1;
+        speedY = 0;
     }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);  // just do this
@@ -50,11 +66,38 @@ public class GraphicsPanel extends JPanel{
             g.drawLine(i * blockSize, 0, i * blockSize, boardLen);
             g.drawLine(0, i * blockSize, boardWid, i * blockSize);
         }
+        g.setColor(Color.red);
+        g.fill3DRect(food.x * blockSize, food.y * blockSize, blockSize,blockSize, true);
 
-       g.setColor(Color.GREEN);
-       g.fillRect(snake.x * blockSize, snake.y * blockSize, blockSize,blockSize);
+        g.setColor(Color.GREEN);
+        g.fill3DRect(snake.x * blockSize, snake.y * blockSize, blockSize,blockSize, true);
+    }
+
+    public void move(){
+
+
+
+
 
     }
 
+    public void keyTyped(KeyEvent e) { } // unimplemented
 
+    public void keyPressed(KeyEvent e) {
+        // see this for all keycodes: https://stackoverflow.com/questions/15313469/java-keyboard-keycodes-list
+        // A = 65, D = 68, S = 83, W = 87, left = 37, up = 38, right = 39, down = 40, space = 32, enter = 10
+        int key = e.getKeyCode();
+        if(key == 65){
+
+        }
+    }
+
+    public void keyReleased(KeyEvent e) {
+        int key = e.getKeyCode();
+        pressedKeys[key] = false;
+    }
+    public void actionPerformed(ActionEvent e) {
+        move();
+        repaint();
+    }
 }
