@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GraphicsPanel extends JPanel implements KeyListener, ActionListener{
     private BufferedImage background;
@@ -16,11 +17,14 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
     private Block food;
     ArrayList<Block> body;
     Block snake;
+    boolean gameOver = false;
 
     private Timer timer;
 
     private int speedX;
     private int speedY;
+
+    Random r;
 
     private class Block{
         int x;
@@ -79,6 +83,10 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
 
 
 
+    }
+    public void placeFood(){
+        food.x = r.nextInt(boardWid/blockSize);
+        food.y = r.nextInt(boardLen/blockSize);
     }
 
     public void keyTyped(KeyEvent e) { } // unimplemented
