@@ -63,7 +63,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         r = new Random();
         placeFood();
 
-        moveX = 1;
+        moveX = 0;
         moveY = 0;
 
         //game timer
