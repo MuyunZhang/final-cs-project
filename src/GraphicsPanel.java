@@ -1,10 +1,7 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -21,8 +18,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
 
     private Timer timer;
 
-    private int speedX;
-    private int speedY;
+    private int moveX;
+    private int moveY;
 
     Random r;
 
@@ -51,15 +48,26 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
     }
 
     public GraphicsPanel(int len, int wid) {
-        boardLen = len;
-        boardWid = wid;
+        this.boardWid = wid;
+        this.boardLen = len;
+        setPreferredSize(new Dimension(this.boardWid, this.boardLen));
         setBackground(Color.black);
-        setPreferredSize(new Dimension(boardLen, boardWid));
+        addKeyListener(this);
+        setFocusable(true);
+
         snake = new Block(5, 5);
+        body = new ArrayList<Block>();
+
         food = new Block(10, 10);
-        pressedKeys = new boolean [128];
-        speedX = 1;
-        speedY = 0;
+        r = new Random();
+        placeFood();
+
+        moveX = 1;
+        moveY = 0;
+
+        //game timer
+        timer = new Timer(100, this); //how long it takes to start timer, milliseconds gone between frames
+        timer.start();
     }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);  // just do this
@@ -75,15 +83,70 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
 
         g.setColor(Color.GREEN);
         g.fill3DRect(snake.x * blockSize, snake.y * blockSize, blockSize,blockSize, true);
+
+        for (int i = 0; i < body.size(); i++) {
+            Block snakePart = body.get(i);
+            // g.fillRect(snakePart.x*tileSize, snakePart.y*tileSize, tileSize, tileSize);
+            g.fill3DRect(snakePart.x*blockSize, snakePart.y*blockSize, blockSize, blockSize, true);
+        }
+
+        //Score
+        g.setFont(new Font("Arial", Font.PLAIN, 16));
+        if (gameOver) {
+            g.setColor(Color.red);
+            g.drawString("Game Over: " + String.valueOf(body.size()), blockSize - 16, blockSize);
+        }
+        else {
+            g.drawString("Score: " + String.valueOf(body.size()), blockSize - 16, blockSize);
+        }
     }
 
-    public void move(){
 
 
+    public void move() {
+        //eat food
+        if (collision(snake, food)) {
+            body.add(new Block(food.x, food.y));
+            placeFood();
+        }
 
+        //move snake body
+        for (int i = body.size()-1; i >= 0; i--) {
+            Block snakePart = body.get(i);
+            if (i == 0) { //right before the head
+                snakePart.x = snake.x;
+                snakePart.y = snake.y;
+            }
+            else {
+                Block prevSnakePart = body.get(i-1);
+                snakePart.x = prevSnakePart.x;
+                snakePart.y = prevSnakePart.y;
+            }
+        }
+        //move snake head
+        snake.x += moveX;
+        snake.y += moveY;
 
+        //game over conditions
+        for (int i = 0; i < body.size(); i++) {
+            Block snakePart = body.get(i);
 
+            //collide with snake head
+            if (collision(snake, snakePart)) {
+                gameOver = true;
+            }
+        }
+
+        if (snake.x*blockSize < 0 || snake.x*blockSize > boardWid || //passed left border or right border
+                snake.y*blockSize < 0 || snake.y*blockSize > boardLen ) { //passed top border or bottom border
+            gameOver = true;
+        }
     }
+
+    public boolean collision(Block tile1, Block tile2) {
+        return tile1.x == tile2.x && tile1.y == tile2.y;
+    }
+
     public void placeFood(){
         food.x = r.nextInt(boardWid/blockSize);
         food.y = r.nextInt(boardLen/blockSize);
@@ -92,20 +155,32 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
     public void keyTyped(KeyEvent e) { } // unimplemented
 
     public void keyPressed(KeyEvent e) {
-        // see this for all keycodes: https://stackoverflow.com/questions/15313469/java-keyboard-keycodes-list
-        // A = 65, D = 68, S = 83, W = 87, left = 37, up = 38, right = 39, down = 40, space = 32, enter = 10
-        int key = e.getKeyCode();
-        if(key == 65){
-
+        if (e.getKeyCode() == KeyEvent.VK_UP && moveY != 1) {
+            moveX = 0;
+            moveY = -1;
+        }
+        else if (e.getKeyCode() == KeyEvent.VK_DOWN && moveY != -1) {
+            moveX = 0;
+            moveY = 1;
+        }
+        else if (e.getKeyCode() == KeyEvent.VK_LEFT && moveX != 1) {
+            moveX = -1;
+            moveY = 0;
+        }
+        else if (e.getKeyCode() == KeyEvent.VK_RIGHT && moveX != -1) {
+            moveX = 1;
+            moveY = 0;
         }
     }
 
     public void keyReleased(KeyEvent e) {
-        int key = e.getKeyCode();
-        pressedKeys[key] = false;
+
     }
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e) { //called every x milliseconds by gameLoop timer
         move();
         repaint();
+        if (gameOver) {
+            timer.stop();
+        }
     }
 }
