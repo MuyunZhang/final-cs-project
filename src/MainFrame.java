@@ -10,8 +10,9 @@ public class MainFrame {
 
         JFrame frame = new JFrame("Snake Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(boardWid, boardLen); // 540 height of image + 40 for window menu bar
-        frame.setLocationRelativeTo(null); // auto-centers frame in screen
+        frame.setSize(boardWid + 15, boardLen + 40); // 540 height of image + 40 for window frame thingy
+        frame.setLocationRelativeTo(null);
+
 
         // create and add panel
         panel = new GraphicsPanel(boardLen, boardWid);
