@@ -54,6 +54,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         setBackground(Color.black);
         addKeyListener(this);
         setFocusable(true);
+        requestFocusInWindow();
 
         snake = new Block(5, 5);
         body = new ArrayList<Block>();
@@ -66,11 +67,11 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         moveY = 0;
 
         //game timer
-        timer = new Timer(100, this); //how long it takes to start timer, milliseconds gone between frames
+        timer = new Timer(100, this);
         timer.start();
     }
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);  // just do this
+        super.paintComponent(g);
         draw(g);
     }
     public void draw(Graphics g){
@@ -131,20 +132,20 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         for (int i = 0; i < body.size(); i++) {
             Block snakePart = body.get(i);
 
-            //collide with snake head
+            //collide with snake
             if (collision(snake, snakePart)) {
                 gameOver = true;
             }
         }
 
-        if (snake.x*blockSize < 0 || snake.x*blockSize > boardWid || //passed left border or right border
-                snake.y*blockSize < 0 || snake.y*blockSize > boardLen ) { //passed top border or bottom border
+        if (snake.x*blockSize < 0 || snake.x*blockSize > boardWid ||
+                snake.y*blockSize < 0 || snake.y*blockSize > boardLen ) {
             gameOver = true;
         }
     }
 
-    public boolean collision(Block tile1, Block tile2) {
-        return tile1.x == tile2.x && tile1.y == tile2.y;
+    public boolean collision(Block b1, Block b2) {
+        return b1.x == b2.x && b1.y == b2.y;
     }
 
     public void placeFood(){
@@ -152,22 +153,22 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         food.y = r.nextInt(boardLen/blockSize);
     }
 
-    public void keyTyped(KeyEvent e) { } // unimplemented
+    public void keyTyped(KeyEvent e) { }
 
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_UP && moveY != 1) {
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
             moveX = 0;
             moveY = -1;
         }
-        else if (e.getKeyCode() == KeyEvent.VK_DOWN && moveY != -1) {
+        else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
             moveX = 0;
             moveY = 1;
         }
-        else if (e.getKeyCode() == KeyEvent.VK_LEFT && moveX != 1) {
+        else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             moveX = -1;
             moveY = 0;
         }
-        else if (e.getKeyCode() == KeyEvent.VK_RIGHT && moveX != -1) {
+        else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             moveX = 1;
             moveY = 0;
         }
