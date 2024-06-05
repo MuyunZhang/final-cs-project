@@ -169,7 +169,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
             moveY = 0;
         }
         else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            moveX = 1;
+            moveX = 1 ;
             moveY = 0;
         }
     }
