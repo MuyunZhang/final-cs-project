@@ -72,6 +72,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
     }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        System.out.println("called");
         draw(g);
     }
     public void draw(Graphics g){
