@@ -5,9 +5,11 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class GraphicsPanel extends JPanel implements KeyListener, ActionListener{
+public class GraphicsPanel extends JPanel implements KeyListener, ActionListener, MouseListener{
     private BufferedImage background;
     private boolean[] pressedKeys;
+
+    private ArrayList<Blockade> images;
     private int boardLen;
     private int boardWid;
     int blockSize = 25;
@@ -182,5 +184,29 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         if (gameOver) {
             timer.stop();
         }
+    }
+    public void mouseClicked(MouseEvent e) { }  // unimplemented; if you move your mouse while clicking,
+    // this method isn't called, so mouseReleased is best
+
+    public void mousePressed(MouseEvent e) { } // unimplemented
+
+    public void mouseReleased(MouseEvent e) {
+        // removes blockade on click
+        if (e.getButton() == MouseEvent.BUTTON1) {  // left mouse click
+            Point mouseClickLocation = e.getPoint();
+            for (int i = 0; i < images.size(); i++) {
+                Blockade image = images.get(i);
+                if (image.imgRect().contains(mouseClickLocation)) {
+                    images.remove(image);
+                }
+            }
+        }
+    }
+
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    public void mouseExited(MouseEvent e) {
+        gameOver = true;
     }
 }

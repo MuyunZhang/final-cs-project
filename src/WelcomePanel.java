@@ -46,7 +46,7 @@ public class WelcomePanel extends JPanel implements ActionListener {
                 MainFrame f = new MainFrame();
                 enclosingFrame.setVisible(false);
             } else {
-                textField.setText("");
+                textField.setText("Welcome to snake game");
             }
         }
     }
