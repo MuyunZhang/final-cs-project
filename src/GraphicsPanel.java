@@ -75,7 +75,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         draw(g);
     }
     public void draw(Graphics g){
-        for(int i = 0; i < boardWid/blockSize; i ++){
+        for(int i = 0; i < boardWid/blockSize + 1; i ++){
             g.drawLine(i * blockSize, 0, i * blockSize, boardLen);
             g.drawLine(0, i * blockSize, boardWid, i * blockSize);
         }
@@ -87,7 +87,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
 
         for (int i = 0; i < body.size(); i++) {
             Block snakePart = body.get(i);
-            // g.fillRect(snakePart.x*tileSize, snakePart.y*tileSize, tileSize, tileSize);
             g.fill3DRect(snakePart.x*blockSize, snakePart.y*blockSize, blockSize, blockSize, true);
         }
 
@@ -138,8 +137,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
             }
         }
 
-        if (snake.x*blockSize < 0 || snake.x*blockSize > boardWid ||
-                snake.y*blockSize < 0 || snake.y*blockSize > boardLen ) {
+        if (snake.x*blockSize < 0 || snake.x*blockSize >= boardWid ||
+                snake.y*blockSize < 0 || snake.y*blockSize >= boardLen ) {
             gameOver = true;
         }
     }
