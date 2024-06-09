@@ -7,12 +7,18 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 public class WelcomePanel extends JPanel implements ActionListener {
 
     private JTextField textField;
     private JButton submitButton;
     private JButton clearButton;
     private JFrame enclosingFrame;
+
+    private Clip songClip;
 
     public WelcomePanel(JFrame frame) {
         enclosingFrame = frame;
@@ -35,6 +41,7 @@ public class WelcomePanel extends JPanel implements ActionListener {
         textField.setLocation(50, 50);
         submitButton.setLocation(50, 100);
         clearButton.setLocation(150, 100);
+        playMusic();
     }
 
     // ACTIONLISTENER INTERFACE METHODS
@@ -48,6 +55,18 @@ public class WelcomePanel extends JPanel implements ActionListener {
             } else {
                 textField.setText("Welcome to snake game");
             }
+        }
+    }
+
+    private void playMusic() {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/Goblins_Den_(Regular).wav").getAbsoluteFile());
+            songClip = AudioSystem.getClip();
+            songClip.open(audioInputStream);
+            songClip.loop(Clip.LOOP_CONTINUOUSLY);
+            songClip.start();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 }

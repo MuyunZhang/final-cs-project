@@ -2,16 +2,27 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 public class GraphicsPanel extends JPanel implements KeyListener, ActionListener, MouseListener{
     private BufferedImage background;
     private boolean[] pressedKeys;
 
+    private Clip sound;
+
+    private Blockade n;
+
+
     private ArrayList<Blockade> images;
     private int boardLen;
     private int boardWid;
+
     int blockSize = 25;
     private Block food;
     ArrayList<Block> body;
@@ -108,6 +119,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
     public void move() {
         //eat food
         if (collision(snake, food)) {
+            playSound();
             body.add(new Block(food.x, food.y));
             placeFood();
         }
@@ -200,6 +212,19 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
                     images.remove(image);
                 }
             }
+        }
+    }
+
+
+
+    private void playSound() {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/Goblins_Den_(Regular).wav").getAbsoluteFile());
+            sound = AudioSystem.getClip();
+            sound.open(audioInputStream);
+            sound.start();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 
