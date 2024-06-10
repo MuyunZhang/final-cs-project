@@ -34,7 +34,7 @@ public class Blockade {
     public Rectangle imgRect() {
         BufferedImage compare = null;
         try {
-            compare = ImageIO.read(new File("src/assets/windows8_window.png"));
+            compare = ImageIO.read(new File("src/img_1.png"));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }

@@ -16,12 +16,16 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
 
     private Clip sound;
 
+    private Clip music;
+
     private Blockade n;
 
 
     private ArrayList<Blockade> images;
     private int boardLen;
     private int boardWid;
+
+    private double time;
 
     int blockSize = 25;
     private Block food;
@@ -68,6 +72,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         addKeyListener(this);
         setFocusable(true);
         requestFocusInWindow();
+        images = new ArrayList<Blockade>();
 
         snake = new Block(5, 5);
         body = new ArrayList<Block>();
@@ -78,20 +83,24 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
 
         moveX = 0;
         moveY = 0;
+        time = 0;
 
         //game timer
         timer = new Timer(100, this);
         timer.start();
+        playMusic();
     }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         draw(g);
+
     }
     public void draw(Graphics g){
         for(int i = 0; i < boardWid/blockSize + 1; i ++){
             g.drawLine(i * blockSize, 0, i * blockSize, boardLen);
             g.drawLine(0, i * blockSize, boardWid, i * blockSize);
         }
+
         g.setColor(Color.red);
         g.fill3DRect(food.x * blockSize, food.y * blockSize, blockSize,blockSize, true);
 
@@ -193,6 +202,9 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
     public void actionPerformed(ActionEvent e) { //called every x milliseconds by gameLoop timer
         move();
         repaint();
+        if (e.getSource() instanceof Timer && time > 0) {
+            time+= 0.1;
+        }
         if (gameOver) {
             timer.stop();
         }
@@ -219,12 +231,29 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
 
     private void playSound() {
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/Goblins_Den_(Regular).wav").getAbsoluteFile());
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/Fruit collect 1 (1).wav").getAbsoluteFile());
             sound = AudioSystem.getClip();
             sound.open(audioInputStream);
             sound.start();
         } catch (Exception e) {
             System.out.println(e.getMessage());
+        }
+    }
+    private void playMusic() {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/Goblins_Den_(Regular).wav").getAbsoluteFile());
+            music = AudioSystem.getClip();
+            music.open(audioInputStream);
+            music.loop(Clip.LOOP_CONTINUOUSLY);
+            music.start();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void clearLeaves() {
+        for (int i = images.size() - 1; i >= 0; i--) {
+            images.remove(i);
         }
     }
 

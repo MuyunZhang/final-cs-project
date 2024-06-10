@@ -41,7 +41,7 @@ public class WelcomePanel extends JPanel implements ActionListener {
         textField.setLocation(50, 50);
         submitButton.setLocation(50, 100);
         clearButton.setLocation(150, 100);
-        playMusic();
+
     }
 
     // ACTIONLISTENER INTERFACE METHODS
@@ -58,15 +58,5 @@ public class WelcomePanel extends JPanel implements ActionListener {
         }
     }
 
-    private void playMusic() {
-        try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/Goblins_Den_(Regular).wav").getAbsoluteFile());
-            songClip = AudioSystem.getClip();
-            songClip.open(audioInputStream);
-            songClip.loop(Clip.LOOP_CONTINUOUSLY);
-            songClip.start();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
+
 }
