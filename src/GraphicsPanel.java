@@ -143,8 +143,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         }
         else {
             g.drawString("Score: " + String.valueOf(body.size()), blockSize - 16, blockSize);
-            g.drawString("Time: " + time, blockSize - 16, 75 );
-            g.drawString("Timer delay: " + timer2.getDelay(), blockSize - 16, 50);
+            g.drawString("Time: " + time, blockSize - 16, 50 );
         }
     }
 
