@@ -92,6 +92,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         moveX = 0;
         moveY = 0;
         time = 0;
+        t = 0;
 
         //game timer
         timer1 = new Timer(100, this);
@@ -117,6 +118,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         g.setColor(Color.GREEN);
         g.fill3DRect(snake.x * blockSize, snake.y * blockSize, blockSize,blockSize, true);
 
+
         for (int i = 0; i < body.size(); i++) {
             Block snakePart = body.get(i);
             g.fill3DRect(snakePart.x*blockSize, snakePart.y*blockSize, blockSize, blockSize, true);
@@ -126,24 +128,11 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
             Blockade image = images.get(i);
             g.drawImage(image.getImage(), image.getxCord(), image.getyCord(), null);
         }
-
-        // mouse box
+        g.setColor(Color.yellow);
         Point mouseP = getMousePosition();
         if (mouseP != null) {
             g.fillRect(mouseP.x - 10, mouseP.y - 10, 20, 20);
             Rectangle rectangle = new Rectangle(mouseP.x - 10, mouseP.y - 10, 10, 10);
-            // gameover if mouse touches the snake
-            if (snake.imgRect().contains(rectangle)) {
-                gameOver = true;
-            }
-
-            for (int i = 0; i < body.size(); i++) {
-                Block snakeBody = body.get(i);
-
-                if (snakeBody.imgRect().contains(rectangle)) {
-                    gameOver = true;
-                }
-            }
         }
 
         //Score
@@ -231,6 +220,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         }
     }
 
+
+
     public void keyReleased(KeyEvent e) {
 
     }
@@ -239,7 +230,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
             move();
             repaint();
         }
-        if (e.getSource() instanceof Timer && time > 0) {
+        if (e.getSource() instanceof Timer && time >= 0) {
             t ++;
             if(t % 10 == 0) {
                 time += 1;
@@ -255,10 +246,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
                 int randomX = (int) (Math.random() * 600);
                 int randomY = (int) (Math.random() * 560);
                 double random2 = Math.random();
-                if (random2 > 0.5) {
-                    Blockade newImage = new Blockade(randomX, randomY, "src/img.jpg");
-                    images.add(newImage);
-                } else {
+                if (random2 > 0.8) {
                     Blockade newImage = new Blockade(randomX, randomY, "src/img.jpg");
                     images.add(newImage);
                 }
@@ -269,8 +257,32 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
             timer2.stop();
         }
     }
-    public void mouseClicked(MouseEvent e) { }  // unimplemented; if you move your mouse while clicking,
-    // this method isn't called, so mouseReleased is best
+    public void mouseClicked(MouseEvent e) {
+        Point mouseClickLocation = e.getPoint();
+
+        // Check if the mouse click occurred on the snake's head
+        if (isCollision(snake, mouseClickLocation)) {
+            gameOver = true;
+        } else {
+            // Check if the mouse click occurred on any segment of the snake's body
+            for (int i = 0; i < body.size(); i++) {
+                Block snakeBody = body.get(i);
+                if (isCollision(snakeBody, mouseClickLocation)) {
+                    gameOver = true;
+                    break; // No need to continue checking once we find a collision
+                }
+            }
+        }
+    }
+
+    // Helper method to check for collision between a block and a point
+    private boolean isCollision(Block block, Point point) {
+        int blockSize = 25; // Assuming blockSize is defined somewhere in your class
+        Rectangle blockRect = new Rectangle(block.x * blockSize, block.y * blockSize, blockSize, blockSize);
+        return blockRect.contains(point);
+    }
+
+
 
     public void mousePressed(MouseEvent e) { } // unimplemented
 
@@ -320,6 +332,5 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
     }
 
     public void mouseExited(MouseEvent e) {
-        gameOver = true;
     }
 }
