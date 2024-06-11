@@ -14,16 +14,13 @@ public class WelcomePanel extends JPanel implements ActionListener {
         enclosingFrame = frame;
         textField = new JTextField(10);
         submitButton = new JButton("Submit");
-        clearButton = new JButton("Clear");
 
         setPreferredSize(new Dimension(400, 400)); // Set preferred panel size
 
         setLayout(null); // Use null layout for manual component positioning
-        add(textField);
         add(submitButton);
-        add(clearButton);
+        add(textField);
         submitButton.addActionListener(this);
-        clearButton.addActionListener(this);
 
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setUndecorated(true);
@@ -48,7 +45,6 @@ public class WelcomePanel extends JPanel implements ActionListener {
 
         // Adjust the location of buttons
         submitButton.setBounds(50, 250, 100, 30);
-        clearButton.setBounds(200, 250, 100, 30);
     }
 
     // ACTIONLISTENER INTERFACE METHODS
