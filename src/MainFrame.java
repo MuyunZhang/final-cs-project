@@ -12,12 +12,14 @@ public class MainFrame {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(boardWid, boardLen); // 540 height of image + 40 for window frame thingy
         frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
+        frame.setVisible(true);
 
 
         // create and add panel
         panel = new GraphicsPanel(boardLen, boardWid);
         frame.add(panel);
+        frame.pack();
 
-        frame.setVisible(true);
     }
 }

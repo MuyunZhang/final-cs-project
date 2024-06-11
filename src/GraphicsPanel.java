@@ -26,6 +26,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
     private int boardWid;
 
     private double time;
+    private int t;
 
     int blockSize = 25;
     private Block food;
@@ -33,7 +34,8 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
     Block snake;
     boolean gameOver = false;
 
-    private Timer timer;
+    private Timer timer1;
+    private Timer timer2;
 
     private int moveX;
     private int moveY;
@@ -62,6 +64,11 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         public void setY(int y) {
             this.y = y;
         }
+
+        public Rectangle imgRect() {
+            Rectangle rectangle = new Rectangle(x, y,x + 25, y + 25);
+            return rectangle;
+        }
     }
 
     public GraphicsPanel(int len, int wid) {
@@ -70,6 +77,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         setPreferredSize(new Dimension(this.boardWid, this.boardLen));
         setBackground(Color.black);
         addKeyListener(this);
+        addMouseListener(this);
         setFocusable(true);
         requestFocusInWindow();
         images = new ArrayList<Blockade>();
@@ -86,8 +94,10 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         time = 0;
 
         //game timer
-        timer = new Timer(100, this);
-        timer.start();
+        timer1 = new Timer(100, this);
+        timer2 = new Timer(500, this);
+        timer1.start();
+        timer2.start();
         playMusic();
     }
     public void paintComponent(Graphics g) {
@@ -112,6 +122,30 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
             g.fill3DRect(snakePart.x*blockSize, snakePart.y*blockSize, blockSize, blockSize, true);
         }
 
+        for (int i = 0; i < images.size(); i++) {
+            Blockade image = images.get(i);
+            g.drawImage(image.getImage(), image.getxCord(), image.getyCord(), null);
+        }
+
+        // mouse box
+        Point mouseP = getMousePosition();
+        if (mouseP != null) {
+            g.fillRect(mouseP.x - 10, mouseP.y - 10, 20, 20);
+            Rectangle rectangle = new Rectangle(mouseP.x - 10, mouseP.y - 10, 10, 10);
+            // gameover if mouse touches the snake
+            if (snake.imgRect().contains(rectangle)) {
+                gameOver = true;
+            }
+
+            for (int i = 0; i < body.size(); i++) {
+                Block snakeBody = body.get(i);
+
+                if (snakeBody.imgRect().contains(rectangle)) {
+                    gameOver = true;
+                }
+            }
+        }
+
         //Score
         g.setFont(new Font("Arial", Font.PLAIN, 16));
         if (gameOver) {
@@ -120,10 +154,10 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         }
         else {
             g.drawString("Score: " + String.valueOf(body.size()), blockSize - 16, blockSize);
+            g.drawString("Time: " + time, blockSize - 16, 75 );
+            g.drawString("Timer delay: " + timer2.getDelay(), blockSize - 16, 50);
         }
     }
-
-
 
     public void move() {
         //eat food
@@ -150,7 +184,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         snake.x += moveX;
         snake.y += moveY;
 
-        //game over conditions
+        //game over condition
         for (int i = 0; i < body.size(); i++) {
             Block snakePart = body.get(i);
 
@@ -159,6 +193,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
                 gameOver = true;
             }
         }
+
 
         if (snake.x*blockSize < 0 || snake.x*blockSize >= boardWid ||
                 snake.y*blockSize < 0 || snake.y*blockSize >= boardLen ) {
@@ -200,13 +235,38 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
 
     }
     public void actionPerformed(ActionEvent e) { //called every x milliseconds by gameLoop timer
-        move();
-        repaint();
+        if (e.getSource() == timer1) {
+            move();
+            repaint();
+        }
         if (e.getSource() instanceof Timer && time > 0) {
-            time+= 0.1;
+            t ++;
+            if(t % 10 == 0) {
+                time += 1;
+            }
+        }
+        if (e.getSource() == timer2) {
+            int newDelay = 500 - (int) (body.size() * 7.5);
+            if (newDelay > 0) {
+                timer2.setDelay(newDelay);
+            }
+            double random = Math.random();
+            if (random > 0.65 && time > 10) {
+                int randomX = (int) (Math.random() * 600);
+                int randomY = (int) (Math.random() * 560);
+                double random2 = Math.random();
+                if (random2 > 0.5) {
+                    Blockade newImage = new Blockade(randomX, randomY, "src/img.jpg");
+                    images.add(newImage);
+                } else {
+                    Blockade newImage = new Blockade(randomX, randomY, "src/img.jpg");
+                    images.add(newImage);
+                }
+            }
         }
         if (gameOver) {
-            timer.stop();
+            timer1.stop();
+            timer2.stop();
         }
     }
     public void mouseClicked(MouseEvent e) { }  // unimplemented; if you move your mouse while clicking,
@@ -226,7 +286,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
             }
         }
     }
-
 
 
     private void playSound() {
