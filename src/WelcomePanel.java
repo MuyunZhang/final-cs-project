@@ -13,7 +13,7 @@ public class WelcomePanel extends JPanel implements ActionListener {
     public WelcomePanel(JFrame frame) {
         enclosingFrame = frame;
         textField = new JTextField(10);
-        submitButton = new JButton("Submit");
+        submitButton = new JButton("Start");
 
         setPreferredSize(new Dimension(400, 400)); // Set preferred panel size
 
